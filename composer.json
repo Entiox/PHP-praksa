@@ -1,0 +1,15 @@
+{
+    "name": "austrax/praksa",
+    "autoload": {
+        "psr-4": {
+            "Austrax\\Praksa\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Entiox",
+            "email": "drazenantunovic012@gmail.com"
+        }
+    ],
+    "require": {}
+}
