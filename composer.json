@@ -1,8 +1,8 @@
 {
-    "name": "austrax/praksa",
+    "name": "entiox/php-praksa",
     "autoload": {
         "psr-4": {
-            "Austrax\\Praksa\\": "src/"
+            "App\\": "src/"
         }
     },
     "authors": [
@@ -11,5 +11,7 @@
             "email": "drazenantunovic012@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "twig/twig": "^3.7"
+    }
 }

@@ -1,11 +1,8 @@
 <?php
-    require_once "src/routing/routes.php";
-    require_once "src/routing/router.php";
-    require_once "src/request/request.php";
+    require "vendor/autoload.php";
+    require "src/Routing/Routes.php";
 
-    $firstName = "Person's first name";
-    $lastName = "Person's last name";
+    use App\Request\Request;
 
-    $request = new Request("/greeting", HttpMethod::GET, array("firstName" => $firstName, "lastName" => $lastName));
-    Router::resolveRoute($request)->send();
-?>
+    $request = new Request();
+    $router->resolveRoute($request)->send();

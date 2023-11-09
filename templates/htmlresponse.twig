@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HtmlResponse</title>
+</head>
+<body>
+    {% macro renderArray(array) %}
+        <ul>
+            {% for key, value in array %}
+                <li>
+                    <strong>{{ key }}:</strong>
+                    {% if value is iterable %}
+                        {{ _self.renderArray(value) }}
+                    {% else %}
+                        {{ value }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endmacro %}
+
+    {{ _self.renderArray(content) }}
+</body>
+</html>

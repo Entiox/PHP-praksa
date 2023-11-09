@@ -1,33 +1,30 @@
 <?php
-    require_once "requestinterface.php";
-    require_once "src/httpmethod.php";
+    namespace App\Request;
+
+    use App\Interfaces\RequestInterface;
 
     class Request implements RequestInterface
     {
-        private string $url;
-        private HttpMethod $httpMethod;
-        private $params;
-
-        public function __construct(string $url, HttpMethod $httpMethod, $params = [])
-        {
-            $this->url = $url;
-            $this->httpMethod = $httpMethod;
-            $this->params = $params;
-        }
-
         public function getUrl(): string
         {
-            return $this->url;
+            $url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+            return $url;
         }
 
-        public function getHttpMethod(): HttpMethod
+        public function getHttpMethod(): string
         {
-            return $this->httpMethod;
+            return $_SERVER["REQUEST_METHOD"];
         }
 
-        public function getParams()
+        public function getParams(): array
         {
-            return $this->params;
+            if($_SERVER["REQUEST_METHOD"] === "POST")
+            {
+                return $_POST;
+            }
+            else
+            {
+                return $_GET;
+            }
         }
     }
-?>

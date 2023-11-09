@@ -1,28 +1,45 @@
 <?php
-    require_once "src/routing/router.php";
-    require_once "src/routing/route.php";
-    require_once "src/request/request.php";
-    require_once "src/httpmethod.php";
-    require_once "src/response/response.php";
+    namespace App\Routing;
 
-    Router::addRoute(new Route("/random-number", HttpMethod::GET, function($params){
-        return new Response(rand()); 
+    use App\Controller\IndexController;
+    use App\Routing\Router;
+    use App\Routing\Route;
+
+    $controller = new IndexController();
+    $router = new Router();
+
+    $router->addRoute(new Route("/random-number", "GET", $controller, function(array $params) use ($controller){
+        return $controller->indexAction(array("result" => rand())); 
     }));
 
-    Router::addRoute(new Route("/greeting", HttpMethod::GET, function($params){
+    $router->addRoute(new Route("/greeting", "GET", $controller, function(array $params) use ($controller){
         if(!array_key_exists("firstName", $params) || !array_key_exists("lastName", $params))
         {
-            return Response::getMissingParamsResponse();
+            header("HTTP/1.0 400 Bad Request");
+            exit;
         }
-        return new Response("Greetings ".$params["firstName"]." ".$params["lastName"]."."); 
+        return $controller->indexAction(array("result" => "Greetings ".$params["firstName"]." ".$params["lastName"])); 
     }));
 
-    Router::addRoute(new Route("/save-quote", HttpMethod::POST, function($params){
+    $router->addRoute(new Route("/save-quote", "POST", $controller, function(array $params) use ($controller){
         if(!array_key_exists("quote", $params))
         {
-            return Response::getMissingParamsResponse();
+            header("HTTP/1.0 400 Bad Request");
+            exit;
         }
-        file_put_contents("data.txt", $params["quote"], FILE_APPEND);
-        return new Response("Quote saved successfully."); 
+        file_put_contents("data.txt", $params["quote"]."\n", FILE_APPEND);
+        return $controller->indexAction(array("result" => "Quote saved successfully.")); 
     }));
-?>
+    
+    $router->addRoute(new ParameterizedRoute("/messages/message/{messageId}", "GET",  $controller, function(array $params) use ($controller){
+        return $controller->indexAction(array("result" => "This is message number: ".$params["messageId"])); 
+    }));
+
+    $router->addRoute(new Route("/packages", "GET",  $controller, function() use ($controller){
+        return $controller->indexHtmlAction(array("result" => array(array("Mobile phone", "Charger"), "Earphones"))); 
+    }));
+
+    $router->addRoute(new Route("/trees", "GET",  $controller, function() use ($controller){
+        return $controller->indexJsonAction(array("result" => array(array("name" => "Spruce", "type" => "evergreen"),
+         array("name" => "Oak", "type" => "deciduous"), array("name" => "Pine", "type" => "deciduous")))); 
+    }));

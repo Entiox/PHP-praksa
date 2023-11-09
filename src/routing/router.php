@@ -1,31 +1,50 @@
 <?php
-    require_once "src/response/response.php";
+    namespace App\Routing;
+
+    use App\Response\Response;
+    use App\Request\Request;
     
     class Router
     {
-        private static array $routes = [];
+        private array $routes = [];
 
-        public static function addRoute(Route $route)
+        public function addRoute(Route $route)
         {
-            array_push(self::$routes, $route);
+            array_push($this->routes, $route);
         }
 
-        public static function resolveRoute(Request $request)
+        public function resolveRoute(Request $request): Response
         {
-            $filteredRoutes = array_filter(self::$routes, function($route) use ($request)
+            $filteredRoutes = array_filter($this->routes, function($route) use ($request)
             {
-                return $route->getUrl() === $request->getUrl() && $route->getHttpMethod() === $request->getHttpMethod();
+                if($route instanceof ParameterizedRoute)
+                {
+                    $position = strrpos($request->getUrl(), "/");
+                    return $route->getUrlWithoutParam() === substr($request->getUrl(), 0, $position) && $route->getHttpMethod() === $request->getHttpMethod();
+                }
+                else
+                {
+                    return $route->getUrl() === $request->getUrl() && $route->getHttpMethod() === $request->getHttpMethod();
+                }
             });
 
             $filteredRoute = reset($filteredRoutes);
             if($filteredRoute !== false)
             {
-                return $filteredRoute->invokeCallback($request->getParams());
+                if($filteredRoute instanceof ParameterizedRoute)
+                {
+                    return $filteredRoute->invokeCallback(
+                     $request->getParams() + array("messageId" => substr(strrchr($request->getUrl(), "/"), 1)));
+                }
+                else
+                {
+                    return $filteredRoute->invokeCallback($request->getParams());
+                }
             }
             else
             {
-                return Response::getInvalidRouteResponse();
+                header("HTTP/1.0 404 Not Found");
+                exit;
             }
         }
     }
-?>

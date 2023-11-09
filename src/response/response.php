@@ -1,28 +1,31 @@
 <?php
-    require_once "responseinterface.php";
+    namespace App\Response;
+
+    use App\Interfaces\ResponseInterface;
 
     class Response implements ResponseInterface
     {
-        private $content;
-        
-        public function __construct($content = null)
-        {
-            $this->content = $content;
-        }
+        public function __construct(protected $content = [])
+        {}
         
         public function send()
         {
-            echo $this->content;
+            $this->printArray($this->content);
         }
 
-        public static function getMissingParamsResponse(): Response
+        public final function printArray($array, $space = 0)
         {
-            return new Response("Missing parameter(s).");
-        }
-
-        public static function getInvalidRouteResponse(): Response
-        {
-            return new Response("Route not found.");
+            foreach($array as $key => $value)
+            {
+                if(!is_array($value))
+                {
+                    echo $key.": ".$value."<br>";
+                }
+                else
+                {
+                    echo $key.": <br>";
+                    $this->printArray($value, $space + 1);
+                }
+            }
         }
     }
-?>
