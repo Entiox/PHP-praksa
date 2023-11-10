@@ -32,7 +32,7 @@
     }));
     
     $router->addRoute(new ParameterizedRoute("/messages/message/{messageId}", "GET",  $controller, function(array $params) use ($controller){
-        return $controller->indexAction(array("result" => "This is message number: ".$params["messageId"])); 
+        return $controller->indexAction(array("result" => "This is message number: ".$params["messageId"].".")); 
     }));
 
     $router->addRoute(new Route("/packages", "GET",  $controller, function() use ($controller){
