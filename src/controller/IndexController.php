@@ -1,31 +1,24 @@
 <?php
-    namespace App\Controller;
+namespace App\Controller;
 
-    use App\Response\JsonResponse;
-    use App\Response\Response;
-    use App\Response\HtmlResponse;
-    use App\Connection\Connection;
+use App\Response\JsonResponse;
+use App\Response\Response;
+use App\Response\HtmlResponse;
 
-    class IndexController
+class IndexController
+{
+    public function indexAction($content): Response
     {
-        private Connection $connnection;
-
-        public function __construct() {
-            $this->connnection = Connection::getInstance();
-        }
-
-        public function indexAction($content): Response
-        {
-            return new Response($content);
-        }
-
-        public function indexJsonAction($content): JsonResponse
-        {
-            return new JsonResponse($content);
-        }
-
-        public function indexHtmlAction($content): HtmlResponse
-        {
-            return new HtmlResponse($content);
-        }
+        return new Response($content);
     }
+
+    public function indexJsonAction($content): JsonResponse
+    {
+        return new JsonResponse($content);
+    }
+
+    public function indexHtmlAction($content): HtmlResponse
+    {
+        return new HtmlResponse($content);
+    }
+}

@@ -1,28 +1,28 @@
 <?php
-    namespace App\Routing;
+namespace App\Routing;
 
-    use App\Controller\IndexController;
-    use InvalidArgumentException;
+use App\Controller\IndexController;
+use InvalidArgumentException;
 
-    class ParameterizedRoute extends Route
+class ParameterizedRoute extends Route
+{
+    public function __construct(private string $url, private string $httpMethod, private IndexController $controller, protected $callback)
     {
-        public function __construct(private string $url, private string $httpMethod, private IndexController $controller, protected $callback)
+        parent::__construct($url, $httpMethod, $controller, $callback);
+        if(!isset($url[strrpos($url, "/") + 1]) || !isset($url[strlen($url) - 1]) 
+            || $url[strrpos($url, "/") + 1] != "{" || $url[strlen($url) - 1] != "}")
         {
-            parent::__construct($url, $httpMethod, $controller, $callback);
-            if(!isset($url[strrpos($url, "/") + 1]) || !isset($url[strlen($url) - 1]) 
-                || $url[strrpos($url, "/") + 1] != "{" || $url[strlen($url) - 1] != "}")
-            {
-                throw new InvalidArgumentException("Route url is not properly defined.");
-            }
-        }
-
-        public function getUrlWithoutParam(): string
-        {
-            return strstr($this->getUrl(), "/{", true);
-        }
-
-        public function getUniqueParamName()
-        {
-            return substr(strrchr($this->getUrl(), "{"), 1, -1);
+            throw new InvalidArgumentException("Route url is not properly defined.");
         }
     }
+
+    public function getUrlWithoutParam(): string
+    {
+        return strstr($this->getUrl(), "/{", true);
+    }
+
+    public function getUniqueParamName()
+    {
+        return substr(strrchr($this->getUrl(), "{"), 1, -1);
+    }
+}

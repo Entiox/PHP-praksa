@@ -1,7 +1,7 @@
 <?php
-    namespace App\Interfaces;
+namespace App\Interfaces;
 
-    interface ResponseInterface
-    {
-        public function send();
-    }
+interface ResponseInterface
+{
+    public function send();
+}

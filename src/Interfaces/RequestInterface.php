@@ -1,4 +1,4 @@
 <?php
-    namespace App\Interfaces;
+namespace App\Interfaces;
 
-    interface RequestInterface{}
+interface RequestInterface{}

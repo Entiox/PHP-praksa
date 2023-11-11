@@ -1,10 +1,10 @@
 <?php
-    namespace App\Response;
+namespace App\Response;
 
-    class JsonResponse extends Response
+class JsonResponse extends Response
+{
+    public function send()
     {
-        public function send()
-        {
-            echo json_encode($this->content);
-        }
+        echo json_encode($this->content);
     }
+}

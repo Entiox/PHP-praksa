@@ -1,30 +1,30 @@
 <?php
-    namespace App\Request;
+namespace App\Request;
 
-    use App\Interfaces\RequestInterface;
+use App\Interfaces\RequestInterface;
 
-    class Request implements RequestInterface
+class Request implements RequestInterface
+{
+    public function getUrl(): string
     {
-        public function getUrl(): string
-        {
-            $url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-            return $url;
-        }
+        $url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+        return $url;
+    }
 
-        public function getHttpMethod(): string
-        {
-            return $_SERVER["REQUEST_METHOD"];
-        }
+    public function getHttpMethod(): string
+    {
+        return $_SERVER["REQUEST_METHOD"];
+    }
 
-        public function getParams(): array
+    public function getParams(): array
+    {
+        if($_SERVER["REQUEST_METHOD"] === "POST")
         {
-            if($_SERVER["REQUEST_METHOD"] === "POST")
-            {
-                return $_POST;
-            }
-            else
-            {
-                return $_GET;
-            }
+            return $_POST;
+        }
+        else
+        {
+            return $_GET;
         }
     }
+}

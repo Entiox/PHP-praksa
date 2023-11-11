@@ -1,8 +1,8 @@
 <?php
-    require "vendor/autoload.php";
-    require "src/Routing/Routes.php";
+require "vendor/autoload.php";
+require "src/Routing/Routes.php";
 
-    use App\Request\Request;
+use App\Request\Request;
 
-    $request = new Request();
-    $router->resolveRoute($request)->send();
+$request = new Request();
+$router->resolveRoute($request)->send();

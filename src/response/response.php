@@ -1,31 +1,31 @@
 <?php
-    namespace App\Response;
+namespace App\Response;
 
-    use App\Interfaces\ResponseInterface;
+use App\Interfaces\ResponseInterface;
 
-    class Response implements ResponseInterface
+class Response implements ResponseInterface
+{
+    public function __construct(protected $content = [])
+    {}
+    
+    public function send()
     {
-        public function __construct(protected $content = [])
-        {}
-        
-        public function send()
-        {
-            $this->printArray($this->content);
-        }
+        $this->printArray($this->content);
+    }
 
-        public final function printArray($array, $space = 0)
+    public final function printArray($array, $space = 0)
+    {
+        foreach($array as $key => $value)
         {
-            foreach($array as $key => $value)
+            if(!is_array($value))
             {
-                if(!is_array($value))
-                {
-                    echo $key.": ".$value."<br>";
-                }
-                else
-                {
-                    echo $key.": <br>";
-                    $this->printArray($value, $space + 1);
-                }
+                echo $key.": ".$value."<br>";
+            }
+            else
+            {
+                echo $key.": <br>";
+                $this->printArray($value, $space + 1);
             }
         }
     }
+}
