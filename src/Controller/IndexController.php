@@ -13,12 +13,12 @@ class IndexController
         return new Response(array("result" => array("request url" => $request->getUrl(), "parameters" => $request->getParams())));
     }
 
-    public static function indexJsonAction($request): JsonResponse
+    public static function indexJsonAction(Request $request): JsonResponse
     {
         return new JsonResponse(array("result" => array("request url" => $request->getUrl(), "parameters" => $request->getParams())));
     }
 
-    public static function indexHtmlAction($request): HtmlResponse
+    public static function indexHtmlAction(Request $request): HtmlResponse
     {
         return new HtmlResponse(array("result" => array("request url" => $request->getUrl(), "parameters" => $request->getParams())));
     }
