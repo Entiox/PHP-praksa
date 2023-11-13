@@ -3,6 +3,7 @@ require "vendor/autoload.php";
 require "src/Routing/Routes.php";
 
 use App\Request\Request;
+use App\Routing\Router;
 
 $request = new Request();
-$router->resolveRoute($request)->send();
+Router::resolveRoute($request)->send();

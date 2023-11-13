@@ -17,13 +17,17 @@ class Response implements ResponseInterface
     {
         foreach($array as $key => $value)
         {
+            for ($i=0; $i < $space; $i++) { 
+                echo "-";
+            }
+
             if(!is_array($value))
             {
                 echo $key.": ".$value."<br>";
             }
             else
             {
-                echo $key.": <br>";
+                echo $key.":</br>";
                 $this->printArray($value, $space + 1);
             }
         }

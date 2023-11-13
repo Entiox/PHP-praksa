@@ -1,15 +1,25 @@
 <?php
 namespace App\Routing;
 
-use App\Controller\IndexController;
+use App\Request\Request;
 use App\Response\Response;
 
 class Route
 {
     protected const BASE_URI = "/praksa/api/v1";
 
-    public function __construct(private string $url, private string $httpMethod, private IndexController $controller, protected $callback)
+    public function __construct(private string $url, private string $httpMethod, protected $callback)
     {}
+
+    public static function get(string $url, $callback)
+    {
+        Router::addRoute(new static($url, "GET", $callback));
+    }
+
+    public static function post(string $url, $callback)
+    {
+        Router::addRoute(new static($url, "POST", $callback));
+    }
 
     public function getUrl(): string
     {
@@ -21,8 +31,8 @@ class Route
         return $this->httpMethod;
     }
 
-    public function invokeCallback($params = []): Response
+    public function invokeCallback(Request $request): Response
     {
-        return call_user_func($this->callback, $params);
+        return call_user_func($this->callback, $request);
     }
 }

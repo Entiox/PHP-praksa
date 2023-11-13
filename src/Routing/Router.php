@@ -6,16 +6,16 @@ use App\Request\Request;
 
 class Router
 {
-    private array $routes = [];
+    private static array $routes = [];
 
-    public function addRoute(Route $route)
+    public static function addRoute(Route $route)
     {
-        array_push($this->routes, $route);
+        array_push(self::$routes, $route);
     }
 
-    public function resolveRoute(Request $request): Response
+    public static function resolveRoute(Request $request): Response
     {
-        $filteredRoutes = array_filter($this->routes, function($route) use ($request)
+        $filteredRoutes = array_filter(self::$routes, function($route) use ($request)
         {
             if($route instanceof ParameterizedRoute)
             {
@@ -31,15 +31,7 @@ class Router
         $filteredRoute = reset($filteredRoutes);
         if($filteredRoute !== false)
         {
-            if($filteredRoute instanceof ParameterizedRoute)
-            {
-                return $filteredRoute->invokeCallback(
-                    $request->getParams() + array("messageId" => substr(strrchr($request->getUrl(), "/"), 1)));
-            }
-            else
-            {
-                return $filteredRoute->invokeCallback($request->getParams());
-            }
+            return $filteredRoute->invokeCallback($request);
         }
         else
         {

@@ -21,8 +21,13 @@ class ParameterizedRoute extends Route
         return strstr($this->getUrl(), "/{", true);
     }
 
-    public function getUniqueParamName()
+    public function getParamName()
     {
         return substr(strrchr($this->getUrl(), "{"), 1, -1);
+    }
+
+    public static function getParamValue(string $url)
+    {
+        return substr(strrchr($url, "{"), 1, -1);
     }
 }
