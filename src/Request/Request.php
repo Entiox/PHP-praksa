@@ -18,13 +18,7 @@ class Request implements RequestInterface
 
     public function getParams(): array
     {
-        if($_SERVER["REQUEST_METHOD"] === "POST")
-        {
-            return $_POST;
-        }
-        else
-        {
-            return $_GET;
-        }
+        $params = $_SERVER["REQUEST_METHOD"] === "POST" ? $_POST : $_GET;
+        return $params;
     }
 }

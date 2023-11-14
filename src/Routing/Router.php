@@ -15,23 +15,45 @@ class Router
 
     public static function resolveRoute(Request $request): Response
     {
-        $filteredRoutes = array_filter(self::$routes, function($route) use ($request)
+        $urlParams = [];
+        $requestUrlSegments = explode("/", $request->getUrl());
+
+        $filteredRoutes = array_filter(self::$routes, function($route) use ($request, $requestUrlSegments, $urlParams)
         {
-            if($route instanceof ParameterizedRoute)
+            $routeUrlSegments = explode("/", $route->getUrl());
+
+            if(count($requestUrlSegments) !== count($routeUrlSegments))
             {
-                $position = strrpos($request->getUrl(), "/");
-                return $route->getUrlWithoutParam() === substr($request->getUrl(), 0, $position) && $route->getHttpMethod() === $request->getHttpMethod();
+                return false;
             }
-            else
+
+            foreach($routeUrlSegments as $index => $routeUrlSegment)
             {
-                return $route->getUrl() === $request->getUrl() && $route->getHttpMethod() === $request->getHttpMethod();
+                if(strlen($routeUrlSegment >= 2) && $routeUrlSegment[0] === "{" 
+                    && $routeUrlSegment[strlen($routeUrlSegment) - 1] === "}")
+                {
+                    if(!isset($requestUrlSegments[$index][0]) && $routeUrlSegment[1] !== "?")
+                    {
+                        header("HTTP/1.0 400 Bad Request");
+                        exit;
+                    }
+                    $urlParams[$routeUrlSegment] = $requestUrlSegments[$index];
+                    continue;
+                }
+
+                if($routeUrlSegment !== $requestUrlSegments[$index])
+                {
+                    return false;
+                }
             }
+
+            return true;
         });
 
         $filteredRoute = reset($filteredRoutes);
         if($filteredRoute !== false)
         {
-            return $filteredRoute->invokeCallback($request);
+            return $filteredRoute->invokeCallback($request, $urlParams);
         }
         else
         {

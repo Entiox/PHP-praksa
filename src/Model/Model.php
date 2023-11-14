@@ -3,12 +3,11 @@ namespace App\Model;
 
 use App\Connection\Connection;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
-use ReflectionClass;
 
 class Model
 {
     private static ?Connection $connection = null;
-    private static ?string $tableName = null;
+    public static ?string $tableName = null;
     private static ?string $primaryKeyName = null;
 
     public function __construct(private array $attrs = [], private $primaryKeyValue = null) {
@@ -19,11 +18,10 @@ class Model
     {
         if(self::$tableName === null)
         {
-            $reflection = new ReflectionClass(__CLASS__);
-            $className = $reflection->getShortName();
+            $fullClassName = explode("\\", get_called_class());
             $inflectorFactory = new InflectorFactory();
             $inflector = $inflectorFactory->build();
-            self::$tableName = strtolower($inflector->pluralize($className));
+            self::$tableName = strtolower($inflector->pluralize(end($fullClassName)));
         }
 
         if(self::$connection === null)
@@ -57,8 +55,6 @@ class Model
     public function save()
     {
         $this->primaryKeyValue = self::$connection->insert(self::$tableName, $this->attrs);
-        $keys = self::$connection->fetchAssoc(self::$connection->select("SHOW KEYS FROM ".self::$tableName." WHERE key_name = 'PRIMARY'"));
-        self::$primaryKeyName = $keys["Column_name"];
     }
 
     public function update()

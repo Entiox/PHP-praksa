@@ -8,6 +8,7 @@ class Connection
 {
     private static Connection $connnection;
     private PDO $pdo;
+    private PDOStatement $sth;
 
     private function __construct()
     {
@@ -23,35 +24,35 @@ class Connection
         return self::$connnection;
     }
 
-    public function select(string $query, array $values = []): PDOStatement
+    public function select(string $query, array $values = [])
     {
-        $sth = $this->pdo->prepare($query);
+        $this->sth = $this->pdo->prepare($query);
         if(array_is_list($values))
         {
             foreach($values as $key => $value)
             {
-                $sth->bindValue($key + 1, $value);
+                $this->sth->bindValue($key + 1, $value);
             }
         }
         else
         {
             foreach($values as $key => $value)
             {   
-                $sth->bindValue($key, $value);
+                $this->sth->bindValue($key, $value);
             }
         }
-        $sth->execute();
-        return $sth;
+        $this->sth->execute();
+        return $this;
     }
 
-    public function fetchAssoc(PDOStatement $statement)
+    public function fetchAssoc()
     {
-        return $statement->fetch(PDO::FETCH_ASSOC);
+        return $this->sth->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function fetchAssocAll(PDOStatement $statement)
+    public function fetchAssocAll()
     {
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $this->sth->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function insert(string $tableName, array $values)
@@ -60,15 +61,15 @@ class Connection
         {
             $query = "INSERT INTO ".$tableName." (".implode(", ", array_keys($attrs)).")
             VALUES(".implode(", ", array_map(function($attr){ return ":".$attr; }, array_keys($attrs))).")";
-            $sth = $this->pdo->prepare($query); 
+            $this->sth = $this->pdo->prepare($query); 
 
             foreach($attrs as $key => $attr)
             {   
-                $sth->bindValue($key, $attr);
+                $this->sth->bindValue($key, $attr);
             }
             
-            $sth->execute();
-            return $sth;
+            $this->sth->execute();
+            return $this->sth;
         };
 
         if(is_array(reset($values)))
@@ -108,19 +109,19 @@ class Connection
             }, array_keys($condition), $condition))." ";
         }
 
-        $sth = $this->pdo->prepare($query);
+        $this->sth = $this->pdo->prepare($query);
 
         foreach($columns as $key => $column)
         {   
-            $sth->bindValue($key, $column);
+            $this->sth->bindValue($key, $column);
         }
 
         foreach($conditions as $index => $condition)
         {
-            $sth->bindValue(":cond".$index, $condition[2]);
+            $this->sth->bindValue(":cond".$index, $condition[2]);
         }
 
-        $sth->execute();
-        return $sth;
+        $this->sth->execute();
+        return $this->sth;
     }
 }
