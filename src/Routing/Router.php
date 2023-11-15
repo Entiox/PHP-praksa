@@ -15,10 +15,9 @@ class Router
 
     public static function resolveRoute(Request $request): Response
     {
-        $urlParams = [];
         $requestUrlSegments = explode("/", $request->getUrl());
 
-        $filteredRoutes = array_filter(self::$routes, function($route) use ($request, $requestUrlSegments, $urlParams)
+        $filteredRoutes = array_filter(self::$routes, function($route) use ($requestUrlSegments)
         {
             $routeUrlSegments = explode("/", $route->getUrl());
 
@@ -32,12 +31,11 @@ class Router
                 if(strlen($routeUrlSegment >= 2) && $routeUrlSegment[0] === "{" 
                     && $routeUrlSegment[strlen($routeUrlSegment) - 1] === "}")
                 {
-                    if(!isset($requestUrlSegments[$index][0]) && $routeUrlSegment[1] !== "?")
+                    if(!isset($requestUrlSegments[$index][0]))
                     {
                         header("HTTP/1.0 400 Bad Request");
                         exit;
                     }
-                    $urlParams[$routeUrlSegment] = $requestUrlSegments[$index];
                     continue;
                 }
 
@@ -52,7 +50,8 @@ class Router
 
         $filteredRoute = reset($filteredRoutes);
         if($filteredRoute !== false)
-        {
+        {  
+            $urlParams = $filteredRoute->fetchParams($request->getUrl());
             return $filteredRoute->invokeCallback($request, $urlParams);
         }
         else

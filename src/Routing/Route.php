@@ -50,4 +50,21 @@ class Route
     {
         return call_user_func($this->callback, $request, ...$params);
     }
+
+    public function fetchParams($url)
+    {
+        $params = [];
+        $requestUrlSegments = explode("/", $url);
+        $routeUrlSegments = explode("/", $this->getUrl());
+
+        foreach($routeUrlSegments as $index => $routeUrlSegment)
+        {
+            if(strlen($routeUrlSegment >= 2) && $routeUrlSegment[0] === "{" 
+                && $routeUrlSegment[strlen($routeUrlSegment) - 1] === "}")
+            {
+                $params[substr($routeUrlSegment, 1, strlen($routeUrlSegment) - 2)] = $requestUrlSegments[$index];
+            }
+        }
+        return $params;
+    }
 }
