@@ -3,9 +3,12 @@ namespace App\Model;
 
 use App\Connection\Connection;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
+use App\Model\HasTimestamps;
+use App\Model\Deletes;
 
 class Model
 {
+    use HasTimestamps, Deletes;
     private static ?Connection $connection = null;
     public static ?string $tableName = null;
     private static ?string $primaryKeyName = null;
@@ -21,7 +24,7 @@ class Model
             $fullClassName = explode("\\", get_called_class());
             $inflectorFactory = new InflectorFactory();
             $inflector = $inflectorFactory->build();
-            self::$tableName = strtolower($inflector->pluralize(end($fullClassName)));
+            self::$tableName = strtolower($inflector->pluralize($fullClassName));
         }
 
         if(self::$connection === null)
@@ -63,7 +66,10 @@ class Model
         {
             return;
         }
-        self::$connection->update(self::$tableName, $this->attrs, [[self::$primaryKeyName, "=", $this->primaryKeyValue]]);
+        $updatedAtExists = self::$connection->checkColumn(self::$tableName, "updated_at");
+        $attrs = $updatedAtExists ? array_merge($this->attrs, array("updated_at" => NULL)) : $this->attrs;
+
+        self::$connection->update(self::$tableName, $attrs, [[self::$primaryKeyName, "=", $this->primaryKeyValue]]);
     }
 
     public static function find($primaryKey)

@@ -55,6 +55,13 @@ class Connection
         return $this->sth->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function checkColumn($tableName, $columnName)
+    {
+        $this->sth = $this->pdo->prepare("SHOW COLUMNS FROM ".$tableName." WHERE Field LIKE '".$columnName."'");
+        $this->sth->execute();
+        return $this->fetchAssoc();
+    }
+
     public function insert(string $tableName, array $values)
     {
         $insertSingle = function ($attrs) use ($tableName)
@@ -86,7 +93,7 @@ class Connection
         return $this->pdo->lastInsertId();
     }
 
-    public function update(string $tableName, array $columns, array $conditions = []): PDOStatement
+    public function update(string $tableName, array $columns = [], array $conditions = [])
     {
         $query = "UPDATE ".$tableName." SET ".implode(", ", array_map(function($key) {
             return $key." = :".$key;
@@ -118,10 +125,48 @@ class Connection
 
         foreach($conditions as $index => $condition)
         {
-            $this->sth->bindValue(":cond".$index, $condition[2]);
+            $this->sth->bindValue("cond".$index, $condition[2]);
         }
 
         $this->sth->execute();
-        return $this->sth;
+    }
+
+    public function addColumn(string $tableName, array $values)
+    {
+        $query = "ALTER TABLE ".$tableName." ".implode(", ", array_map(function($key, $value) {
+            return "ADD COLUMN IF NOT EXISTS ".$key." ".$value;
+        }, array_keys($values), $values));
+        $this->sth = $this->pdo->prepare($query);
+        $this->sth->execute();
+    }
+
+    public function delete(string $tableName, array $conditions = [])
+    {
+        $query = "DELETE FROM ".$tableName;
+        
+        if(count($conditions) != 0)
+        {
+            $query .= " WHERE ";
+        }
+
+        foreach($conditions as $index => $condition)
+        {
+            $query .= implode(" ", array_map(function($condIndex, $value) use ($index)
+            {
+                if($condIndex === 2)
+                {
+                    return ":cond".$index;
+                }
+                return $value;
+            }, array_keys($condition), $condition))." ";
+        }
+
+        $this->sth = $this->pdo->prepare($query);
+
+        foreach($conditions as $index => $condition)
+        {
+            $this->sth->bindValue("cond".$index, $condition[2]);
+        }
+        $this->sth->execute();
     }
 }
