@@ -15,13 +15,10 @@ class Route
 
         foreach($urlSegments as $urlSegment)
         {
-            if(strlen($urlSegment >= 2) && $urlSegment[0] === "{" 
+            if(strlen($urlSegment) === 2 && $urlSegment[0] === "{" 
                 && $urlSegment[strlen($urlSegment) - 1] === "}")
             {
-                if(strlen($urlSegment) === 2 || ($urlSegment[1] === "?" && strlen($urlSegment) === 3))
-                {
-                    throw new InvalidArgumentException("Specify valid parameter name.");
-                }
+                throw new InvalidArgumentException("Specify valid parameter name.");
             }
         }
     }
