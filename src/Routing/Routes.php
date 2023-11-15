@@ -9,4 +9,4 @@ Route::get("/route2", [IndexController::class, "indexJsonAction"]);
 Route::get("/route3", [IndexController::class, "indexHtmlAction"]);
 
 Route::get("/route4/{id}", [IndexController::class, "indexJsonAction"]);
-Route::get("/route5/{gg}/{}", [IndexController::class, "indexJsonAction"]);
+Route::get("/route5/{firstId}/{secondId}", [IndexController::class, "indexJsonAction"]);
