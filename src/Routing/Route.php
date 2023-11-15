@@ -59,6 +59,11 @@ class Route
             if(strlen($routeUrlSegment >= 2) && $routeUrlSegment[0] === "{" 
                 && $routeUrlSegment[strlen($routeUrlSegment) - 1] === "}")
             {
+                if(!isset($requestUrlSegments[$index][0]))
+                {
+                    header("HTTP/1.0 400 Bad Request");
+                    exit;
+                }
                 $params[substr($routeUrlSegment, 1, strlen($routeUrlSegment) - 2)] = $requestUrlSegments[$index];
             }
         }
