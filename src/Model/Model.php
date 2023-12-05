@@ -67,7 +67,7 @@ class Model
             return;
         }
         $updatedAtExists = self::$connection->checkColumn(self::$tableName, "updated_at");
-        $attrs = $updatedAtExists ? array_merge($this->attrs, array("updated_at" => NULL)) : $this->attrs;
+        $attrs = $updatedAtExists ? array_merge($this->attrs, ["updated_at" => NULL]) : $this->attrs;
 
         self::$connection->update(self::$tableName, $attrs, [[self::$primaryKeyName, "=", $this->primaryKeyValue]]);
     }
@@ -90,4 +90,3 @@ class Model
         return $this->attrs;
     }
 }
-

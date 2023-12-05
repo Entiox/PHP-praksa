@@ -1,6 +1,4 @@
 <?php
-namespace App\Routing;
-
 use App\Controller\IndexController;
 use App\Routing\Route;
 

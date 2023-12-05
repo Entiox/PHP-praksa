@@ -25,12 +25,12 @@ class Route
 
     public static function get(string $url, $callback)
     {
-        Router::addRoute(new static($url, "GET", $callback));
+        Router::addRoute(new static($url, Request::GET, $callback));
     }
 
     public static function post(string $url, $callback)
     {
-        Router::addRoute(new static($url, "POST", $callback));
+        Router::addRoute(new static($url, Request::POST, $callback));
     }
 
     public function getUrl(): string

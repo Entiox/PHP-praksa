@@ -13,6 +13,7 @@
     ],
     "require": {
         "twig/twig": "^3.7",
-        "doctrine/inflector": "^2.0"
+        "doctrine/inflector": "^2.0",
+        "vlucas/phpdotenv": "^5.6"
     }
 }

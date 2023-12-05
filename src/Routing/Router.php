@@ -17,9 +17,14 @@ class Router
     {
         $requestUrlSegments = explode("/", $request->getUrl());
 
-        $filteredRoutes = array_filter(self::$routes, function($route) use ($requestUrlSegments)
+        $filteredRoutes = array_filter(self::$routes, function($route) use ($requestUrlSegments, $request)
         {
             $routeUrlSegments = explode("/", $route->getUrl());
+
+            if($route->getHttpMethod() !== $request->getHttpMethod())
+            {
+                return false;
+            }
 
             if(count($requestUrlSegments) !== count($routeUrlSegments))
             {

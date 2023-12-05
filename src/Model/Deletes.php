@@ -6,7 +6,7 @@ trait Deletes
     public static function enableDeletedAt()
     {
         self::initialize();
-        self::$connection->addColumn(self::$tableName, array("deleted_at" => "TIMESTAMP NULL DEFAULT NULL"));
+        self::$connection->addColumn(self::$tableName, ["deleted_at" => "TIMESTAMP NULL DEFAULT NULL"]);
     }
 
     public function delete()
@@ -27,6 +27,6 @@ trait Deletes
         {
             return;
         }
-        self::$connection->update(self::$tableName, array("deleted_at" => date("Y-m-d H:i:s")), [[self::$primaryKeyName, "=", $this->primaryKeyValue]]);
+        self::$connection->update(self::$tableName, ["deleted_at" => date("Y-m-d H:i:s")], [[self::$primaryKeyName, "=", $this->primaryKeyValue]]);
     }
 }

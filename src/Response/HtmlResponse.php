@@ -20,6 +20,6 @@ class HtmlResponse extends Response
 
     public function send()
     {
-        echo $this->twig->render("htmlresponse.twig", array("content" => $this->content));
+        echo $this->twig->render("htmlresponse.twig", ["content" => $this->content]);
     }
 }

@@ -12,7 +12,7 @@ class Connection
 
     private function __construct()
     {
-        $this->pdo = new PDO("mysql:host=localhost;dbname=praksa", "root");
+        $this->pdo = new PDO($_ENV["DB_DNS"], $_ENV["DB_USERNAME"]);
     }
 
     public static function getInstance()
