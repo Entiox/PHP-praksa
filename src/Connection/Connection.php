@@ -58,8 +58,7 @@ class Connection
 
     public function insert(string $tableName, array $values)
     {
-        $insertSingle = function ($attrs) use ($tableName)
-        {
+        $insertSingle = function ($attrs) use ($tableName) {
             $query = "INSERT INTO ".$tableName." (".implode(", ", array_keys($attrs)).")
             VALUES(".implode(", ", array_map(function($attr) { return ":".$attr; }, array_keys($attrs))).")";
             $this->sth = $this->pdo->prepare($query); 
