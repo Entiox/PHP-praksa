@@ -17,8 +17,7 @@ class Connection
 
     public static function getInstance()
     {
-        if(!isset(self::$connnection))
-        {
+        if(!isset(self::$connnection)) {
             self::$connnection = new Connection();
         }
         return self::$connnection;
@@ -27,17 +26,12 @@ class Connection
     public function select(string $query, array $values = [])
     {
         $this->sth = $this->pdo->prepare($query);
-        if(array_is_list($values))
-        {
-            foreach($values as $key => $value)
-            {
+        if(array_is_list($values)) {
+            foreach($values as $key => $value) {
                 $this->sth->bindValue($key + 1, $value);
             }
-        }
-        else
-        {
-            foreach($values as $key => $value)
-            {   
+        } else {
+            foreach($values as $key => $value) {   
                 $this->sth->bindValue($key, $value);
             }
         }
@@ -67,11 +61,10 @@ class Connection
         $insertSingle = function ($attrs) use ($tableName)
         {
             $query = "INSERT INTO ".$tableName." (".implode(", ", array_keys($attrs)).")
-            VALUES(".implode(", ", array_map(function($attr){ return ":".$attr; }, array_keys($attrs))).")";
+            VALUES(".implode(", ", array_map(function($attr) { return ":".$attr; }, array_keys($attrs))).")";
             $this->sth = $this->pdo->prepare($query); 
 
-            foreach($attrs as $key => $attr)
-            {   
+            foreach($attrs as $key => $attr) {   
                 $this->sth->bindValue($key, $attr);
             }
             
@@ -79,10 +72,8 @@ class Connection
             return $this->sth;
         };
 
-        if(is_array(reset($values)))
-        {
-            foreach($values as $value)
-            {
+        if(is_array(reset($values))) {
+            foreach($values as $value) {
                 $insertSingle($value);
             }
         }
@@ -99,17 +90,13 @@ class Connection
             return $key." = :".$key;
         }, array_keys($columns)));
 
-        if(count($conditions) != 0)
-        {
+        if(count($conditions) != 0) {
             $query .= " WHERE ";
         }
 
-        foreach($conditions as $index => $condition)
-        {
-            $query .= implode(" ", array_map(function($condIndex, $value) use($index)
-            {
-                if($condIndex === 2)
-                {
+        foreach($conditions as $index => $condition) {
+            $query .= implode(" ", array_map(function($condIndex, $value) use($index) {
+                if($condIndex === 2) {
                     return ":cond".$index;
                 }
                 return $value;
@@ -118,13 +105,11 @@ class Connection
 
         $this->sth = $this->pdo->prepare($query);
 
-        foreach($columns as $key => $column)
-        {   
+        foreach($columns as $key => $column) {   
             $this->sth->bindValue($key, $column);
         }
 
-        foreach($conditions as $index => $condition)
-        {
+        foreach($conditions as $index => $condition) {
             $this->sth->bindValue("cond".$index, $condition[2]);
         }
 
@@ -144,17 +129,13 @@ class Connection
     {
         $query = "DELETE FROM ".$tableName;
         
-        if(count($conditions) != 0)
-        {
+        if(count($conditions) != 0) {
             $query .= " WHERE ";
         }
 
-        foreach($conditions as $index => $condition)
-        {
-            $query .= implode(" ", array_map(function($condIndex, $value) use ($index)
-            {
-                if($condIndex === 2)
-                {
+        foreach($conditions as $index => $condition) {
+            $query .= implode(" ", array_map(function($condIndex, $value) use ($index) {
+                if($condIndex === 2) {
                     return ":cond".$index;
                 }
                 return $value;
@@ -163,8 +144,7 @@ class Connection
 
         $this->sth = $this->pdo->prepare($query);
 
-        foreach($conditions as $index => $condition)
-        {
+        foreach($conditions as $index => $condition) {
             $this->sth->bindValue("cond".$index, $condition[2]);
         }
         $this->sth->execute();

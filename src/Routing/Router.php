@@ -21,26 +21,21 @@ class Router
         {
             $routeUrlSegments = explode("/", $route->getUrl());
 
-            if($route->getHttpMethod() !== $request->getHttpMethod())
-            {
+            if($route->getHttpMethod() !== $request->getHttpMethod()) {
                 return false;
             }
 
-            if(count($requestUrlSegments) !== count($routeUrlSegments))
-            {
+            if(count($requestUrlSegments) !== count($routeUrlSegments)) {
                 return false;
             }
 
-            foreach($routeUrlSegments as $index => $routeUrlSegment)
-            {
+            foreach($routeUrlSegments as $index => $routeUrlSegment) {
                 if(strlen($routeUrlSegment >= 2) && $routeUrlSegment[0] === "{" 
-                    && $routeUrlSegment[strlen($routeUrlSegment) - 1] === "}")
-                {
+                    && $routeUrlSegment[strlen($routeUrlSegment) - 1] === "}") {
                     continue;
                 }
 
-                if($routeUrlSegment !== $requestUrlSegments[$index])
-                {
+                if($routeUrlSegment !== $requestUrlSegments[$index]) {
                     return false;
                 }
             }
@@ -49,13 +44,10 @@ class Router
         });
 
         $filteredRoute = reset($filteredRoutes);
-        if($filteredRoute !== false)
-        {  
+        if($filteredRoute !== false) {  
             $urlParams = $filteredRoute->fetchParams($request->getUrl());
             return $filteredRoute->invokeCallback($request, $urlParams);
-        }
-        else
-        {
+        } else {
             header("HTTP/1.0 404 Not Found");
             exit;
         }

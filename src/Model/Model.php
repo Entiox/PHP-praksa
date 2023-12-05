@@ -19,21 +19,18 @@ class Model
 
     private static function initialize()
     {
-        if(self::$tableName === null)
-        {
+        if(self::$tableName === null) {
             $fullClassName = explode("\\", get_called_class());
             $inflectorFactory = new InflectorFactory();
             $inflector = $inflectorFactory->build();
             self::$tableName = strtolower($inflector->pluralize($fullClassName));
         }
 
-        if(self::$connection === null)
-        {
+        if(self::$connection === null) {
             self::$connection = Connection::getInstance();
         }
 
-        if(self::$primaryKeyName === null)
-        {
+        if(self::$primaryKeyName === null) {
             $keys = self::$connection->fetchAssoc(self::$connection->select("SHOW KEYS FROM ".self::$tableName." WHERE key_name = 'PRIMARY'"));
             self::$primaryKeyName = $keys["Column_name"];
         }
@@ -46,11 +43,9 @@ class Model
 
     public function __get($name)
     {
-        if(isset($this->attrs[$name])){
+        if(isset($this->attrs[$name])) {
             return $this->attrs[$name];
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
@@ -62,8 +57,7 @@ class Model
 
     public function update()
     {
-        if(!isset($this->primaryKeyValue))
-        {
+        if(!isset($this->primaryKeyValue)) {
             return;
         }
         $updatedAtExists = self::$connection->checkColumn(self::$tableName, "updated_at");
@@ -77,8 +71,7 @@ class Model
         self::initialize();
         $sth = self::$connection->select("SELECT * FROM ".self::$tableName." WHERE ".self::$primaryKeyName." = ?", [$primaryKey]);
         $attrs = self::$connection->fetchAssoc($sth);
-        if($attrs === false)
-        {
+        if($attrs === false) {
             return null;
         }
         unset($attrs[self::$primaryKeyName]);

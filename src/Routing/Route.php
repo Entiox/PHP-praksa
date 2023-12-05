@@ -13,11 +13,9 @@ class Route
     {
         $urlSegments = explode("/", $this->url);
 
-        foreach($urlSegments as $urlSegment)
-        {
+        foreach($urlSegments as $urlSegment) {
             if(strlen($urlSegment) === 2 && $urlSegment[0] === "{" 
-                && $urlSegment[strlen($urlSegment) - 1] === "}")
-            {
+                && $urlSegment[strlen($urlSegment) - 1] === "}") {
                 throw new InvalidArgumentException("Specify valid parameter name.");
             }
         }
@@ -54,13 +52,10 @@ class Route
         $requestUrlSegments = explode("/", $url);
         $routeUrlSegments = explode("/", $this->getUrl());
 
-        foreach($routeUrlSegments as $index => $routeUrlSegment)
-        {
+        foreach($routeUrlSegments as $index => $routeUrlSegment) {
             if(strlen($routeUrlSegment >= 2) && $routeUrlSegment[0] === "{" 
-                && $routeUrlSegment[strlen($routeUrlSegment) - 1] === "}")
-            {
-                if(!isset($requestUrlSegments[$index][0]))
-                {
+                && $routeUrlSegment[strlen($routeUrlSegment) - 1] === "}") {
+                if(!isset($requestUrlSegments[$index][0])) {
                     header("HTTP/1.0 400 Bad Request");
                     exit;
                 }

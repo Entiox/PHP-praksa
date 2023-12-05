@@ -15,18 +15,14 @@ class Response implements ResponseInterface
 
     public final function printArray($array, $space = 0)
     {
-        foreach($array as $key => $value)
-        {
+        foreach($array as $key => $value) {
             for ($i=0; $i < $space; $i++) { 
                 echo "-";
             }
 
-            if(!is_array($value))
-            {
+            if(!is_array($value)) {
                 echo $key.": ".$value."<br>";
-            }
-            else
-            {
+            } else {
                 echo $key.":</br>";
                 $this->printArray($value, $space + 1);
             }

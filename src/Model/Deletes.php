@@ -17,14 +17,12 @@ trait Deletes
     public function softDelete()
     {
         $deletedAtExists = self::$connection->checkColumn(self::$tableName, "deleted_at");
-        if(!$deletedAtExists)
-        {
+        if(!$deletedAtExists) {
             return;
         }
         $currentValue = self::$connection->select("SELECT deleted_at FROM ".self::$tableName." WHERE ".self::$primaryKeyName." = ".$this->primaryKeyValue)->fetchAssoc();
 
-        if($currentValue["deleted_at"])
-        {
+        if($currentValue["deleted_at"]) {
             return;
         }
         self::$connection->update(self::$tableName, ["deleted_at" => date("Y-m-d H:i:s")], [[self::$primaryKeyName, "=", $this->primaryKeyValue]]);
