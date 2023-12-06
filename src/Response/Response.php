@@ -6,7 +6,8 @@ use App\Interfaces\ResponseInterface;
 class Response implements ResponseInterface
 {
     public function __construct(protected $content = [])
-    {}
+    {  
+    }
     
     public function send()
     {
